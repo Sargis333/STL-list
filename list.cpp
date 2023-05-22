@@ -1,65 +1,129 @@
+@ -1,128 +0,0 @@
 #include <iostream>
 using namespace std;
+
 class Node {
+public:
     int data;
-    Node *next;
-    public:
-        Node(int i):data(i),next(NULL) {}
-        inline void setNext(Node *node) {
-            this->next = node;
-        }
-        inline int Data() {
-            return this->data;
-        }
-        inline Node * Next() {
-            return this->next;
-        }
-};
-class List {
-    Node *Head;
-    public:
-        List():Head(NULL) {}
-        void push_front(int i);
-        void push_back(int i);
-        void print();
+    Node* next;
+
+    Node(int value) {
+        data = value;
+        next = NULL;
+    }
 };
 
-void List::push_front(int i) {
-    Node *node = new Node(i);
-    node->setNext(Head);
-    Head = node;
-}
+class LinkedList {
+private:
+    Node* head;
 
-void List::push_back(int i) {
-    Node *node = new Node(i);
-    if(Head == NULL) {
-        Head = node;
-        return;
+public:
+    LinkedList() {
+        head = NULL;
     }
-    Node *curr = Head;
-    while(curr && curr->Next()) {
-        curr = curr->Next();
-    }
-    curr->setNext(node);
-}
 
-void List::print() {
-    Node *curr = Head;
-    while(curr) {
-        cout << curr->Data();
-        cout << " ";
-        curr = curr->Next();
+    ~LinkedList() {
+        Node* current = head;
+        while (current != NULL) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
     }
-}
+
+    
+    void push_front(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+    }
+
+    
+    void push_back(int value) {
+        Node* newNode = new Node(value);
+
+        if (head == NULL) {
+            head = newNode;
+            return;
+        }
+
+        Node* current = head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+
+    
+    void deleteNode(int value) {
+        if (head == NULL) {
+            return;
+        }
+
+        if (head->data == value) {
+            head = head->next;
+            return;
+        }
+
+        Node* current = head;
+        while (current->next != NULL && current->next->data != value) {
+            current = current->next;
+        }
+
+        if (current->next != NULL) {
+            current->next = current->next->next;
+        }
+    }
+
+    
+    void sort() {
+        if (head == NULL) {
+            return;
+        }
+
+        Node* i = head;
+        while (i->next != NULL) {
+            Node* j = i->next;
+            Node* minNode = i;
+
+            while (j != NULL) {
+                if (j->data < minNode->data) {
+                    minNode = j;
+                }
+                j = j->next;
+            }
+
+            if (minNode != i) {
+                int temp = i->data;
+                i->data = minNode->data;
+                minNode->data = temp;
+            }
+
+            i = i->next;
+        }
+    }
+
+    
+    void printList() {
+        Node* current = head;
+        while (current != NULL) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
 int main() {
-    List list;
-    list.push_front(1);
-    list.push_front(2);
+    LinkedList list;
+    list.push_front(5);
+    list.push_back(10);
     list.push_front(3);
-    list.push_front(4);
-    list.push_back(1);
-    list.push_back(2);
-    list.push_back(3);
-    list.push_back(4);
-    list.print();
+    list.push_back(15);
+    list.printList();
+    list.sort();
+    list.printList();
+    list.deleteNode(5);
+    list.printList();
+    return 0;
 }
