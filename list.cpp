@@ -1,4 +1,3 @@
-@ -1,128 +0,0 @@
 #include <iostream>
 using namespace std;
 
